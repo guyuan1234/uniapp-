@@ -20,11 +20,7 @@
 			}
 		},
 		onLoad() {
-            this.$axios({
-                url:'/api',
-            }).then((res)=>{
-                console.log(res)
-            })
+            
 		},
 		methods: {
             

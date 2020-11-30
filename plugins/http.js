@@ -59,12 +59,14 @@ let request = (data, resolve, reject) => {
                 }
                 request(data, resolve, reject);
             } else if ( res.data.code === 101 || res.data.code === 104 || res.data.code === 105) { 
+                // 需要重新登录
                 toast(res.data.message); 
                 uni.navigateTo({
                     url: '/pages/views/login/login'
                 })
 
             } else { 
+                // 返回
                 if (res.data.code !== 0) {
                     toast(res.data.message)
                 }
@@ -76,10 +78,6 @@ let request = (data, resolve, reject) => {
             reject(err)
         }
     });
-
-    // return new Promise((resolve, reject) => { // resolve(res) 抛出成功  reject(err)抛出失败  【抛出时可传递参数】
-
-    // });
 }
 
 // 此处再次封装一遍  解决当需要更新 token 时做无感刷新
@@ -93,4 +91,4 @@ let axios = (data) => {
     });
 };
 
-export default axios
+export default axios;

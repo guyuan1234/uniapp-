@@ -17,14 +17,7 @@
             "navigationStyle": "custom",
             "enablePullDownRefresh":true
         }
-    }],
-    "tabBar": {
-        "color": "#b1b7bf",
-        "selectedColor": "#da0909",
-        "borderStyle": "white",
-        "backgroundColor": "#ffffff",
-        "list": []
-    },
+    }], 
     "globalStyle": {
         "navigationBarTextStyle": "black",
         "navigationBarTitleText": "通用模板",

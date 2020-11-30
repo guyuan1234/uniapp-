@@ -27,14 +27,14 @@ export default {
             
         }
     },
-    // 全局页面滚动监听   --  暂未使用到沉浸式导航栏
-    // onPageScroll(e) {
-    //     // 判断当前自定义沉浸式导航栏是否存在 
-    //     if (this.$refs.gyNavBar) {
-    //         // 执行内部滚动回调
-    //         this.$refs.gyNavBar.pageScroll && this.$refs.gyNavBar.pageScroll(e)
-    //     }
-    // },
+    // 全局页面滚动监听
+    onPageScroll(e) {
+        // 判断当前自定义沉浸式导航栏是否存在 
+        if (this.$refs.gyNavBar) {
+            // 执行内部滚动回调
+            this.$refs.gyNavBar.pageScroll && this.$refs.gyNavBar.pageScroll(e)
+        }
+    },
     methods: {
         money_num,
     },
