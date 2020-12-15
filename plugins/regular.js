@@ -134,7 +134,7 @@ export default {
     },
 
     /**
-     * 匹配mobile
+     * 匹配mobile   手机号码
      */
     isMobile(str) {
         if(!reg_open){  // 判断是否开启正则验证
@@ -365,6 +365,18 @@ export default {
         var result = str.match(/^[a-zA-Z0-9\u4e00-\u9fa5-_]+$/);
         if (result == null) return false;
         return true;
+    },
+
+    /**
+     * 字符验证，只能包含中文、英文、数字、以及符号 下划线等字符。
+     */
+    stringManey(str){
+        if(!reg_open){  // 判断是否开启正则验证
+            return true
+        }
+        str += '';
+        if (this.stringCheck(str) || this.isContainsSpecialChar(str)) return true;
+        return false;
     },
 
     /**

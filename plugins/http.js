@@ -48,10 +48,15 @@ let request = (data, resolve, reject) => {
         method: _method,
         timeout: request_timeout * 1000, // 请求超时时间
         header: {
-            'content-type': 'application/json',
+            'content-type': 'application/json; charset=utf-8',
             'Authorization': _token
         },
         success: (res) => { 
+            if(res.statusCode !== 200){
+                toast(`服务器出现错误：错误代码：${res.statusCode}`)
+                resolve()
+                return
+            }
             if (res.data.code == 102 || res.data.code == 103) { 
                 // 重新请求更新token  ---- 无感刷新
                 if (res.data.code == 102) {
@@ -64,7 +69,7 @@ let request = (data, resolve, reject) => {
                 uni.navigateTo({
                     url: '/pages/views/login/login'
                 })
-
+                resolve(res.data)
             } else { 
                 // 返回
                 if (res.data.code !== 0) {
@@ -75,7 +80,9 @@ let request = (data, resolve, reject) => {
 
         },
         fail: (err) => {
+            console.log(err)
             reject(err)
+            toast('无法连接服务器')
         }
     });
 }

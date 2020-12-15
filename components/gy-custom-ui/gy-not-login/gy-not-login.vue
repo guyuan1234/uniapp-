@@ -1,19 +1,26 @@
 <template>
     <div>
         <view class="flex_box">
-            <image src="/static/logo_canvas.png" mode="" />
+            <image :src="logo" v-if="logo" mode="widthFix" />
+            <view v-else style="height:200rpx"></view>
             <p class="title">您还未登录</p> 
-            <button @tap="skipLogin">前往授权登录</button>
+            <button :style="{background:color}" @tap="$emit('tap-change')">授权登录</button>
         </view>
     </div>
 </template>
 
 <script>
     export default {
-        methods: {
-            skipLogin(){
-                uni.navigateTo({ url: '/pages/views/login/login' })
+        props:{
+            logo:String,
+            color:{
+                type: String,
+                default(){
+                    return '#ff0000'
+                }
             },
+        },
+        methods: { 
         },
     }
 </script>
@@ -25,19 +32,16 @@
         flex-flow: column nowrap;
         align-items: center;
         image{
-            width: 320rpx;
-            height: 181rpx;
+            width: 320rpx; 
         }
         .title{
             font-size: 38rpx;
-            color: #555;
+            color: #333;
             font-weight: 550;
             padding:30rpx 0;
         }
         button{
-            border:0;
-            margin-top:20rpx;
-            background: #ff0000;
+            border:0; 
             color: #fff;
             width: 300rpx;
             &:active{

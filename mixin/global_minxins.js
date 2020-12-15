@@ -20,23 +20,35 @@ function money_num(num){
     return mask + temp + decimal;
 }
 
-
+import config from '@/plugins/config.js'
 export default {
     data() {
         return { 
             
         }
     },
-    // 全局页面滚动监听
-    onPageScroll(e) {
-        // 判断当前自定义沉浸式导航栏是否存在 
-        if (this.$refs.gyNavBar) {
-            // 执行内部滚动回调
-            this.$refs.gyNavBar.pageScroll && this.$refs.gyNavBar.pageScroll(e)
-        }
-    },
+    // 全局页面滚动监听 暂未用到此功能
+    // onPageScroll(e) {
+    //     // 判断当前自定义沉浸式导航栏是否存在 
+    //     if (this.$refs.gyNavBar) {
+    //         // 执行内部滚动回调
+    //         this.$refs.gyNavBar.pageScroll && this.$refs.gyNavBar.pageScroll(e)
+    //     }
+    // },
     methods: {
+        previewImage(data,index){
+            console.log(data,index)
+            uni.previewImage({
+                current:index === undefined ? data[0] : index,
+                urls: data,
+            });
+        },
+        // 全局过滤器  金钱 - 千分位处理
         money_num,
+        // 定时器 - 主要用处配置骨架屏在请求完成后延迟一段时间隐藏骨架屏
+        setTimeout(fun){
+            setTimeout(fun,config.skeleton_time)
+        },
     },
     onShow(){
         

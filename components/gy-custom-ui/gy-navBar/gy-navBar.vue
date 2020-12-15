@@ -1,33 +1,69 @@
 <template>
-	<div
-		class="gy-nav-bar"
-		:style="{ backgroundColor: `rgba(${colorRgb(bg)},${opacity / 100})` }"
-	>
-		<div :style="{ height: `${statusBarHeight}px` }"></div>
-		<div class="nav_bar">
-			<div class="left_button" 
-                @tap="tapEvent"
-                :style="{ left: back_left,background: `rgba(0, 0, 0, ${(100 - opacity) / 100 * 0.6})` }"
-                v-if="show_back"> 
-                <!-- 图标基于thorui 可更换其他ui组件库图标 -->
-                <tui-icon v-if="!search_path" :name="isHome? 'home' :'arrowleft'" 
-                    :size="isHome? 16 :26" 
-                    :color="opacity < 10 ? '#ffffff' : `rgba(${colorRgb(active_color)},${opacity / 100})`"
-                ></tui-icon>
-                <tui-icon v-else name="search-2" 
-                    :size="isHome? 16 :26"  
-                    :color="opacity < 10 ? '#ffffff' : `rgba(${colorRgb(active_color)},${opacity / 100})`"
-                ></tui-icon>
-            </div> 
-			<div class="title_box" :style="{color: opacity < 10 ? default_color : `rgba(${colorRgb(active_color)},${opacity / 100})` }">{{title}}</div>
-		</div>
-	</div>
+	<div>
+        <div
+            v-if="mode == 'immersion'"
+            class="gy-nav-bar"
+            :style="{ backgroundColor: `rgba(${colorRgb(bg)},${opacity / 100})` }"
+        >
+            <div :style="{ height: `${statusBarHeight}px` }"></div>
+            <div class="nav_bar">
+                <div class="left_button" 
+                    @tap="tapEvent"
+                    :style="{ left: back_left,background: `rgba(0, 0, 0, ${(100 - opacity) / 100 * 0.6})` }"
+                    v-if="show_back"> 
+                    <!-- 图标基于thorui 可更换其他ui组件库图标 -->
+                    <tui-icon v-if="!search_path" :name="isHome? 'home' :'arrowleft'" 
+                        :size="isHome? 16 :26" 
+                        :color="opacity < 10 ? '#ffffff' : `rgba(${colorRgb(active_color)},${opacity / 100})`"
+                    ></tui-icon>
+                    <tui-icon v-else name="search-2" 
+                        :size="isHome? 16 :26"  
+                        :color="opacity < 10 ? '#ffffff' : `rgba(${colorRgb(active_color)},${opacity / 100})`"
+                    ></tui-icon>
+                </div> 
+                <div class="title_box" :style="{color: opacity < 10 ? default_color : `rgba(${colorRgb(active_color)},${opacity / 100})` }">{{title}}</div>
+            </div>
+        </div>
+        <!--  -->
+        <div v-else-if="mode =='general'" class="gy-nav-bar" :style="{ backgroundColor: `rgba(${colorRgb(bg)},${!transparent ? 1 : 0})` }">
+            <div :style="{ height: `${statusBarHeight}px` }"></div> 
+            <div class="nav_bar">
+                <div class="left_button" 
+                    @tap="tapEvent"
+                    :style="{ left: back_left,background: `rgba(0, 0, 0, 0.6)` }"
+                    v-if="show_back"> 
+                    <!-- 图标基于thorui 可更换其他ui组件库图标 -->
+                    <tui-icon v-if="!search_path" :name="isHome? 'home' :'arrowleft'" 
+                        :size="isHome? 16 :26" 
+                        :color="transparent ? '#fff' : default_color"
+                    ></tui-icon>
+                    <tui-icon v-else name="search-2" 
+                        :size="isHome? 16 :26"  
+                        :color="transparent ? '#fff' : default_color"
+                    ></tui-icon>
+                </div> 
+                <div class="title_box" :style="{color: default_color}">{{title}}</div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
 import Vue from "vue";
 export default {
 	props: {
+        mode:{    //  immersion 沉浸式导航栏渐变显示   general 不需要渐变
+            type:String,   
+            default(){
+                return 'immersion'
+            }
+        },
+        transparent:{ // 是否纯透明  mode  为 general 时生效    
+            type:[String,Boolean], 
+            default(){
+                return false
+            }
+        },
         // 标题文字
         title:{
             type:String,
@@ -150,6 +186,7 @@ export default {
 		this.distance_top = systemInfo.windowWidth;
 		// 状态栏高度
         this.statusBarHeight = systemInfo.statusBarHeight; 
+        this.$emit('bar-height',this.statusBarHeight+44)
         // 获取当前路由有几层
         if(getCurrentPages().length>1){
             this.isHome = false;

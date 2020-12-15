@@ -1,18 +1,18 @@
 <template>
 	<view class="tui-container">
 		<view class="tui-upload-box">
-			<view class="tui-image-item" v-for="(item,index) in imageList" :key="index">
-				<image :src="item" class="tui-item-img" @tap.stop="previewImage(index)" mode="aspectFill"></image>
+			<view class="tui-image-item" :style="{width:customStyle.width,height:customStyle.height}" v-for="(item,index) in imageList" :key="index">
+				<image :src="item" class="tui-item-img" :style="{width:customStyle.width,height:customStyle.height}" @tap.stop="previewImage(index)" mode="aspectFill"></image>
 				<view v-if="!forbidDel" class="tui-img-del" @tap.stop="delImage(index)"></view>
 				<view v-if="statusArr[index]!=1" class="tui-upload-mask">
 					<view class="tui-upload-loading" v-if="statusArr[index]==2"></view>
 					<text class="tui-tips">{{statusArr[index]==2?'上传中...':'上传失败'}}</text>
 					<view class="tui-mask-btn" v-if="statusArr[index]==3" @tap.stop="reUpLoad(index)" hover-class="tui-btn-hover"
-					 :hover-stay-time="150">重新上传</view>
+					 :hover-stay-time="150">重试</view>
 				</view>
-			</view>
-			<view v-if="isShowAdd" class="tui-upload-add" @tap="chooseImage">
-				<view class="tui-upload-icon tui-icon-plus"></view>
+			</view> 
+			<view v-if="isShowAdd" class="tui-upload-add" :style="{width:customStyle.width,height:customStyle.height}" @tap="chooseImage"> 
+                <image src="/static/images/icon/camra.png" mode="" />
 			</view>
 		</view>
 	</view>
@@ -22,6 +22,15 @@
 	export default {
 		name: 'tuiUpload',
 		props: {
+            // 样式
+            customStyle: {
+                type: Object,
+				default () {
+					return {
+
+                    }
+				}
+            },
 			//初始化图片路径
 			value: {
 				type: Array,
@@ -84,7 +93,7 @@
 			header: {
 				type: Object,
 				default () {
-					return {}
+					return { token:'c9eb7b42-3929-4fd8-986d-60cef45e8320' }
 				}
 			},
 			//HTTP 请求中其他额外的 form data
@@ -225,23 +234,26 @@
 				})
 			},
 			uploadImage: function(index, url) {
-				let _this = this;
+                let _this = this;
+                console.log(_this.header)
+                console.log(this.fileKeyName)
+                console.log("URL",url);
 				return new Promise((resolve, reject) => {
 					uni.uploadFile({
-						url: this.serverUrl,
-						name: this.fileKeyName,
-						header: this.header,
-						formData: this.formData,
-						filePath: url,
-						success: function(res) {
+						url: _this.serverUrl,
+                        name: _this.fileKeyName, 
+						header:_this.header,
+						formData: _this.formData,
+                        filePath: url,
+                        
+						success: function(res) { 
 							if (res.statusCode == 200) {
-								//返回结果 此处需要按接口实际返回进行修改
-								let d = JSON.parse(res.data.replace(/\ufeff/g, "") || "{}")
+								let d = JSON.parse(res.data);
 								//判断code，以实际接口规范判断
-								if (d.code % 100 === 0) {
+								if (d.code  ===  1) {
 									// 上传成功 d.url 为上传后图片地址，以实际接口返回为准
-									d.url && (_this.imageList[index] = d.url)
-									_this.$set(_this.statusArr, index, d.url ? "1" : "3")
+									d.data.fullurl && (_this.imageList[index] = d.data.fullurl)
+									_this.$set(_this.statusArr, index, d.data.fullurl ? "1" : "3")
 								} else {
 									// 上传失败
 									_this.$set(_this.statusArr, index, "3")
@@ -280,7 +292,7 @@
 	}
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 	@font-face {
 		font-family: 'tuiUpload';
 		src: url(data:application/font-woff;charset=utf-8;base64,d09GRgABAAAAAATcAA0AAAAAByQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABGRlRNAAAEwAAAABoAAAAciR52BUdERUYAAASgAAAAHgAAAB4AKQALT1MvMgAAAaAAAABCAAAAVjxvR/tjbWFwAAAB+AAAAEUAAAFK5ibpuGdhc3AAAASYAAAACAAAAAj//wADZ2x5ZgAAAkwAAADXAAABAAmNjcZoZWFkAAABMAAAAC8AAAA2FpiS+WhoZWEAAAFgAAAAHQAAACQH3QOFaG10eAAAAeQAAAARAAAAEgwAACBsb2NhAAACQAAAAAwAAAAMAEoAgG1heHAAAAGAAAAAHwAAACABEgA2bmFtZQAAAyQAAAFJAAACiCnmEVVwb3N0AAAEcAAAACgAAAA6OMUs4HjaY2BkYGAAYo3boY/i+W2+MnCzMIDAzb3qdQj6fwPzf+YGIJeDgQkkCgA/KAtvAHjaY2BkYGBu+N/AEMPCAALM/xkYGVABCwBZ4wNrAAAAeNpjYGRgYGBl0GJgZgABJiDmAkIGhv9gPgMADTABSQB42mNgZGFgnMDAysDA1Ml0hoGBoR9CM75mMGLkAIoysDIzYAUBaa4pDA7PGJ9xMjf8b2CIYW5gaAAKM4LkANt9C+UAAHjaY2GAABYIVmBgAAAA+gAtAAAAeNpjYGBgZoBgGQZGBhBwAfIYwXwWBg0gzQakGRmYnjE+4/z/n4EBQksxSf6GqgcCRjYGOIeRCUgwMaACRoZhDwCiLwmoAAAAAAAAAAAAAAAASgCAeNpdjkFKw0AARf/vkIR0BkPayWRKQZtYY90ohJju2kOIbtz0KD1HVm50UfEmWXoAr9ADOHFARHHzeY//Fx8Ci+FJfIgdJFa4AhgiMshbrCuIsLxhFJZVs+Vl1bT1GddtbXTC3OhohN4dg4BJ3zMJAnccyfm468ZzHXddrH9ZKbHzdf9n/vkY/xv9sPQXgGEvBrHHwst5kTbXLE+YpYVPkxepPmW94W16UbdNJd6f3SAzo5W7m1jaKd+8ZZIvk5nlKw9SK6Wle7BLS3f/bTzQLmfAF2T1NsQAeNp9kD1OAzEQhZ/zByQSQiCoXVEA2vyUKRMp9Ailo0g23pBo1155nUg5AS0VB6DlGByAGyDRcgpelkmTImvt6PObmeexAZzjGwr/3yXuhBWO8ShcwREy4Sr1F+Ea+V24jhY+hRvUf4SbuFUD4RYu1BsdVO2Eu5vSbcsKZxgIV3CKJ+Eq9ZVwjfwqXMcVPoQb1L+EmxjjV7iFa2WpDOFhMEFgnEFjig3jAjEcLJIyBtahOfRmEsxMTzd6ETubOBso71dilwMeaDnngCntPbdmvkon/mDLgdSYbh4FS7YpjS4idCgbXyyc1d2oc7D9nu22tNi/a4E1x+xRDWzU/D3bM9JIbAyvkJI18jK3pBJTj2hrrPG7ZynW814IiU68y/SIx5o0dTr3bmniwOLn8owcfbS5kj33qBw+Y1kIeb/dTsQgil2GP5PYcRkAAAB42mNgYoAALjDJyIAOWMGiTIxMjMxsKak5qSWpbFmZiRmJ+QAmgAUIAAAAAf//AAIAAQAAAAwAAAAWAAAAAgABAAMABAABAAQAAAACAAAAAHjaY2BgYGQAgqtL1DlA9M296nUwGgA+8QYgAAA=) format('woff');
@@ -306,21 +318,27 @@
 
 	.tui-upload-box {
 		width: 100%;
-		display: flex;
+        display: flex; 
 		flex-wrap: wrap;
 	}
 
 	.tui-upload-add {
+        border:1px solid #f7f7f7;
+        border-radius: 5rpx;
 		width: 220rpx;
 		height: 220rpx;
 		font-size: 68rpx;
 		font-weight: 100;
 		color: #888;
-		background-color: #F7F7F7;
+		background-color: #ffffff;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 0;
+        padding: 0; 
+        image{
+            width: 48rpx;
+	        height: 48rpx;
+        }
 	}
 
 	.tui-image-item {
@@ -331,14 +349,16 @@
 		margin-bottom: 20rpx;
 	}
 
-	.tui-image-item:nth-of-type(3n) {
-		margin-right: 0;
-	}
+	// .tui-image-item:nth-of-type(3n) {
+	// 	margin-right: 0;
+	// }
 
 	.tui-item-img {
 		width: 220rpx;
 		height: 220rpx;
-		display: block;
+        display: block;
+        border:1px solid #f7f7f7;
+        border-radius: 5rpx;
 	}
 
 	.tui-img-del {
@@ -399,15 +419,17 @@
 	}
 
 	.tui-tips {
-		font-size: 26rpx;
+        margin-top:10rpx;
+		font-size: 24rpx;
 		color: #fff;
 	}
 
 	.tui-mask-btn {
+        margin-top:4rpx;
 		padding: 4rpx 16rpx;
 		border-radius: 40rpx;
 		text-align: center;
-		font-size: 24rpx;
+		font-size: 20rpx;
 		color: #fff;
 		border: 1rpx solid #fff;
 		display: flex;
