@@ -128,7 +128,7 @@ export default {
         }
         str += '';
         if (str == null || str == "") return false;
-        var result = str.match(/^((\(\d{2,3}\))|(\d{3}\-))?(\(0\d{2,3}\)|0\d{2,3}-)?[1-9]\d{6,7}(\-\d{1,4})?$/);
+        var result = str.match(/^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/);
         if (result == null) return false;
         return true;
     },
