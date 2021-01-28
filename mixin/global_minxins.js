@@ -1,30 +1,23 @@
-// 设置千分位公共函数
-function money_num(num){
-    if (isNaN(num)) {
-        throw new TypeError("num is not a number");
-    }
+import {
+    money_num,
+} from './function';
 
-    var groups = (/([\-\+]?)(\d*)(\.\d+)?/g).exec("" + num),
-        mask = groups[1], //符号位 
-        integers = (groups[2] || "").split(""), //整数部分 
-        decimal = groups[3] || "", //小数部分 
-        remain = integers.length % 3;
+// #ifdef H5
+import {
+    browserType,
+} from './function';
+// #endif
 
-    var temp = integers.reduce(function (previousValue, currentValue, index) {
-        if (index + 1 === remain || (index + 1 - remain) % 3 === 0) {
-            return previousValue + currentValue + ",";
-        } else {
-            return previousValue + currentValue;
-        }
-    }, "").replace(/\,$/g, "");
-    return mask + temp + decimal;
-}
-
-import config from '@/plugins/config.js'
+import {
+    mapState
+} from "vuex"
+import config from '@/plugins/config.js';
 export default {
     data() {
-        return { 
-            
+        return {
+            // #ifdef H5
+            wechatBrowser: browserType(), // 判断是否在微信浏览器内
+            // #endif 
         }
     },
     // 全局页面滚动监听 暂未用到此功能
@@ -35,23 +28,59 @@ export default {
     //         this.$refs.gyNavBar.pageScroll && this.$refs.gyNavBar.pageScroll(e)
     //     }
     // },
+    onLoad() {
+
+    },
+    computed: {
+        ...mapState(['webConfig'])
+    },
     methods: {
-        previewImage(data,index){
-            console.log(data,index)
+        // 预览图片
+        previewImage(data, index) {
+            console.log(data, index)
             uni.previewImage({
-                current:index === undefined ? data[0] : index,
+                current: index === undefined ? data[0] : index,
                 urls: data,
             });
         },
+
+        // 联系客服弹框
+        contactService() {
+            const phonne = this.webConfig.customerService;
+            this.common.modal({
+                title: '客服电话',
+                content: phonne,
+                confirmText: '拨打电话'
+            }).then(() => {
+                uni.makePhoneCall({
+                    phoneNumber: phonne 
+                });
+            })
+        },
+
         // 全局过滤器  金钱 - 千分位处理
         money_num,
+
         // 定时器 - 主要用处配置骨架屏在请求完成后延迟一段时间隐藏骨架屏
-        setTimeout(fun){
-            setTimeout(fun,config.skeleton_time)
+        setTimeout(fun) {
+            setTimeout(fun, config.skeleton_time)
         },
+
+        // 全局跳转路由方法 1. type => uni 跳转路由的方式   2. url => 跳转的路由链接 
+        skipLink(type, url) {
+            if (!url) {
+                this.common.toast('暂未开放')
+                return
+            }
+            setTimeout(() => {
+                uni[type]({
+                    url: url
+                })
+            }, 100)
+        }
     },
-    onShow(){
-        
+    onShow() {
+
     },
     filters: {
         // 全局过滤器  金钱 - 千分位处理

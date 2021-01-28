@@ -15,17 +15,19 @@ Vue.prototype.common = common;
 import axios from 'plugins/http.js';
 Vue.prototype.$axios = axios;
 
+//引入vuex
+import store from 'store';  
+
 // 全局mixins
 import global_minxins from "@/mixin/global_minxins.js";
 Vue.mixin(global_minxins);
-
-uni.hideLoading();
 
 Vue.config.productionTip = false;
 
 App.mpType = 'app';
 
 const app = new Vue({
-    ...App
+    ...App,
+    store
 });
 app.$mount();

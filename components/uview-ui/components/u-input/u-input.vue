@@ -65,7 +65,7 @@
 			<view class="u-input__right-icon--select u-input__right-icon__item" v-if="type == 'select'" :class="{
 				'u-input__right-icon--select--reverse': selectOpen
 			}">
-				<u-icon name="arrow-down-fill" size="26" color="#c0c4cc"></u-icon>
+				<u-icon name="arrow-right" size="26" color="#c0c4cc"></u-icon>
 			</view>
 		</view>
 	</view>

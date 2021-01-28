@@ -142,7 +142,7 @@ export default {
         }
         str += '';
         if (str == null || str == "") return false;
-        var result = str.match(/^((\(\d{2,3}\))|(\d{3}\-))?((13\d{9})|(15\d{9})|(18\d{9}))$/);
+        var result = str.match(/^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/);
         if (result == null) return false;
         return true;
     },
@@ -285,45 +285,45 @@ export default {
         return true;
     },
 
-    /**
-     * 匹配身份证号码
-     */
-    isIdCardNo(num) {
-        if(!reg_open){  // 判断是否开启正则验证
-            return true
-        }
-        num += ''; 
-        var len = num.length,
-            re;
-        if (len == 15)
-            re = new RegExp(/^(\d{6})()?(\d{2})(\d{2})(\d{2})(\d{2})(\w)$/);
-        else if (len == 18)
-            re = new RegExp(/^(\d{6})()?(\d{4})(\d{2})(\d{2})(\d{3})(\w)$/);
-        else {
-            // alert("输入的数字位数不对。");
-            return false;
-        }
-        var a = num.match(re);
-        if (a != null) {
-            if (len == 15) {
-                var D = new Date("19" + a[3] + "/" + a[4] + "/" + a[5]);
-                var B = D.getYear() == a[3] && (D.getMonth() + 1) == a[4] && D.getDate() == a[5];
-            } else {
-                var D = new Date(a[3] + "/" + a[4] + "/" + a[5]);
-                var B = D.getFullYear() == a[3] && (D.getMonth() + 1) == a[4] && D.getDate() == a[5];
-            }
-            if (!B) {
-                // alert("输入的身份证号 " + a[0] + " 里出生日期不对。");
-                return false;
-            }
-        }
-        if (!re.test(num)) {
-            // alert("身份证最后一位只能是数字和字母。");
-            return false;
-        }
+    // /**
+    //  * 匹配身份证号码
+    //  */
+    // isIdCardNo(num) {
+    //     if(!reg_open){  // 判断是否开启正则验证
+    //         return true
+    //     }
+    //     num += ''; 
+    //     var len = num.length,
+    //         re;
+    //     if (len == 15)
+    //         re = new RegExp(/^(\d{6})()?(\d{2})(\d{2})(\d{2})(\d{2})(\w)$/);
+    //     else if (len == 18)
+    //         re = new RegExp(/^(\d{6})()?(\d{4})(\d{2})(\d{2})(\d{3})(\w)$/);
+    //     else {
+    //         // alert("输入的数字位数不对。");
+    //         return false;
+    //     }
+    //     var a = num.match(re);
+    //     if (a != null) {
+    //         if (len == 15) {
+    //             var D = new Date("19" + a[3] + "/" + a[4] + "/" + a[5]);
+    //             var B = D.getYear() == a[3] && (D.getMonth() + 1) == a[4] && D.getDate() == a[5];
+    //         } else {
+    //             var D = new Date(a[3] + "/" + a[4] + "/" + a[5]);
+    //             var B = D.getFullYear() == a[3] && (D.getMonth() + 1) == a[4] && D.getDate() == a[5];
+    //         }
+    //         if (!B) {
+    //             // alert("输入的身份证号 " + a[0] + " 里出生日期不对。");
+    //             return false;
+    //         }
+    //     }
+    //     if (!re.test(num)) {
+    //         // alert("身份证最后一位只能是数字和字母。");
+    //         return false;
+    //     }
 
-        return true;
-    },
+    //     return true;
+    // },
 
     /**
      * 匹配汉字

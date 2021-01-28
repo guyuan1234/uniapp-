@@ -4,7 +4,7 @@
             <image :src="logo" v-if="logo" mode="widthFix" />
             <view v-else style="height:200rpx"></view>
             <p class="title">您还未登录</p> 
-            <button :style="{background:color}" @tap="$emit('tap-change')">授权登录</button>
+            <button :style="{background:color}" @tap="$emit('tap-change')">前往登录</button>
         </view>
     </div>
 </template>
@@ -16,7 +16,7 @@
             color:{
                 type: String,
                 default(){
-                    return '#ff0000'
+                    return 'linear-gradient(-28deg, #6aa853 0%, #77b25c 100%), linear-gradient(#000000, #000000)'
                 }
             },
         },

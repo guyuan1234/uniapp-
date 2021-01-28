@@ -18,7 +18,7 @@
                 <image class="logo" :src="logo" mode />
                 <p class="tips_box">
                     点击 {{type === "getUserInfo" ? '授权登录' : type === "getPhoneNumber" && '获取手机号' }} 即同意
-                    <navigator url hover-class="className">《爱在流动平台用户协议》</navigator>
+                    <navigator url hover-class="className">《优享拍拍车》</navigator>
                 </p>
                 <button
                     :style="{backgroundColor:color}"
@@ -80,25 +80,25 @@ export default {
             let iv = data.detail.iv;
             let encryptedData = data.detail.encryptedData;
             this.$axios({
-                url: type == 1 ? "/login" : "/",
+                url: type == 1 ? "/auth/login" : "/user/bindPhone",
                 data: {
                     code: open_id,
-                    // iv: iv,
-                    // encryptedData: encryptedData,
+                    iv: iv,
+                    encryptedData: encryptedData,
                 },
             })
                 .then((res) => {
                     console.log(res)
                     this.loading = false;
-                    if (res.code == 1) {
+                    if (res.code == 0) {
                         this.common.toast(
                             type == 1 ? "授权成功" : "获取成功",
                             500
                         );
                         this.$emit("input", false);
                         if (type == 1) {
-                            uni.setStorageSync("userInfo", res.data.userinfo);
-                            this.$emit("auth");
+                            uni.setStorageSync("token", res.data.token);
+                            this.$emit("auth",res.data.phone);
                         } else {
                             this.$emit("phone");
                         }
